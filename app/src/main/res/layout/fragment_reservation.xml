@@ -94,12 +94,12 @@
                 android:text="Drop Off Location"
                 android:id="@+id/textView6" />
 
-            <EditText
-                android:layout_width="match_parent"
+            <AutoCompleteTextView
+                android:id="@+id/atv_dropoffplaces"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="date"
-                android:ems="10"
-                android:id="@+id/editText4" />
+                android:layout_alignParentTop="true"
+                android:hint="@string/str_atv_places" />
         </LinearLayout>
 
         <LinearLayout
