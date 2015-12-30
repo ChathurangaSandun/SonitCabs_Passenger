@@ -74,12 +74,12 @@
                 android:text="Pick Up Location"
                 android:id="@+id/textView5" />
 
-            <EditText
-                android:layout_width="match_parent"
+            <AutoCompleteTextView
+                android:id="@+id/atv_places"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="date"
-                android:ems="10"
-                android:id="@+id/editText3" />
+                android:layout_alignParentTop="true"
+                android:hint="@string/str_atv_places" />
         </LinearLayout>
 
         <LinearLayout
