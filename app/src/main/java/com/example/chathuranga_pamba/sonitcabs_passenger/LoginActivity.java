@@ -41,6 +41,9 @@ public class LoginActivity extends AppCompatActivity {
 
     User loginUser;
 
+    //session
+    SessionManager session;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,10 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initComponets();
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -202,6 +209,12 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser = users.get(0);
 
                 if (loginUser.getUserType().equals("passenger")) {
+                    // Creating user login session
+                    // For testing i am stroing name
+                    // Use user real data
+                    session.createLoginSession(username);
+
+
                     Intent homeActivity = new Intent(getApplicationContext(), HomeActivity.class);
                     startActivity(homeActivity);
                 } else {
