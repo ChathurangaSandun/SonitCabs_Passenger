@@ -80,6 +80,7 @@ public class ReservationFragment extends Fragment implements View.OnClickListene
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                System.out.println("dfssssssssssssssssssssssssssssssssssssssssssss");
                 placesTask = new PlacesTask();
                 placesTask.execute(s.toString());
             }
@@ -188,7 +189,7 @@ public class ReservationFragment extends Fragment implements View.OnClickListene
             String data = "";
 
             // Obtain browser key from https://code.google.com/apis/console
-            String key = "key=AIzaSyBDIHAqOq1UwqopgZVkcKWXNOsQxFqiDMc";
+            String key = "key=AIzaSyBM33u4gnpYEk2QvxNafTZD9chH3moz-aA";
 
             String input="";
 
@@ -212,6 +213,8 @@ public class ReservationFragment extends Fragment implements View.OnClickListene
 
             // Building the url to the web service
             String url = "https://maps.googleapis.com/maps/api/place/autocomplete/"+output+"?"+parameters;
+
+            System.out.println(url);
 
             try{
                 // Fetching the data from we service
@@ -251,6 +254,8 @@ public class ReservationFragment extends Fragment implements View.OnClickListene
                 // Getting the parsed data as a List construct
                 places = placeJsonParser.parse(jObject);
 
+                System.out.println(places.get(0).keySet());
+
             }catch(Exception e){
                 Log.d("Exception",e.toString());
             }
@@ -264,7 +269,7 @@ public class ReservationFragment extends Fragment implements View.OnClickListene
             int[] to = new int[] { android.R.id.text1 };
 
             // Creating a SimpleAdapter for the AutoCompleteTextView
-            SimpleAdapter adapter = new SimpleAdapter(getContext(), result, android.R.layout.simple_list_item_1, from, to);
+            SimpleAdapter adapter = new SimpleAdapter(getActivity(), result, android.R.layout.simple_list_item_1, from, to);
 
             // Setting the adapter
             atvPlaces.setAdapter(adapter);
