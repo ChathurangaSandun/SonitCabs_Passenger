@@ -68,12 +68,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar"
             android:noHistory="true">
         </activity>
+
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register"
