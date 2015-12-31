@@ -24,6 +24,7 @@ public class HomeActivity extends AppCompatActivity
 
     // Session Manager Class
     SessionManager session;
+    boolean homeFramentFlag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,8 @@ public class HomeActivity extends AppCompatActivity
         //session object
         session = new SessionManager(getApplicationContext());
 
+
+
         HomeFragment fragment = new HomeFragment();
         FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container,fragment);
@@ -45,6 +48,14 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                    HomeFragment fragment = new HomeFragment();
+                    FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.fragment_container,fragment);
+                    fragmentTransaction.commit();
+                    homeFramentFlag = false;
+
+
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -126,57 +137,65 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             // Handle the camera action
+
             HomeFragment fragment = new HomeFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container,fragment);
             fragmentTransaction.commit();
+            homeFramentFlag = true;
 
         } else if (id == R.id.nav_quick_booking) {
             QuickBookingFragment fragment = new QuickBookingFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
+            homeFramentFlag = false;
 
         } else if (id == R.id.nav_reservaion) {
             ReservationFragment fragment = new ReservationFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
+            homeFramentFlag = false;
 
         } else if (id == R.id.nav_comment) {
             CommentFragment fragment = new CommentFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-
+            homeFramentFlag = false;
         } else if (id == R.id.nav_money_rates) {
             MoneyFragment fragment = new MoneyFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-
+            homeFramentFlag = false;
         } else if (id == R.id.nav_rates) {
             StarFragment fragment = new StarFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
+            homeFramentFlag = false;
 
         }else if (id == R.id.nav_view) {
             ViewHistoryFragment fragment = new ViewHistoryFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
+            homeFramentFlag = false;
 
         }else if (id == R.id.nav_edit_history) {
             EditReservationFragment fragment = new EditReservationFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
+            homeFramentFlag = false;
         }else if (id == R.id.nav_edit_profile) {
             SettingFragment fragment = new SettingFragment();
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
+            homeFramentFlag = false;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
