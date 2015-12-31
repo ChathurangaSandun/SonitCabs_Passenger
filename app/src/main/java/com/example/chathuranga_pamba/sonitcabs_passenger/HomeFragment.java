@@ -35,8 +35,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.activity_home,container, false);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        
+
+        mMap =
+
 
 
 
