@@ -3,6 +3,7 @@ package com.example.chathuranga_pamba.sonitcabs_passenger;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -26,6 +27,8 @@ public class HomeActivity extends AppCompatActivity
     SessionManager session;
     boolean homeFramentFlag = true;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -33,6 +36,7 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         //session object
         session = new SessionManager(getApplicationContext());
