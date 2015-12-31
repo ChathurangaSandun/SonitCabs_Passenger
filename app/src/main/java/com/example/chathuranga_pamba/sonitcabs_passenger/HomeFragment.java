@@ -2,16 +2,23 @@ package com.example.chathuranga_pamba.sonitcabs_passenger;
 
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,10 +50,21 @@ import com.google.android.gms.maps.model.MarkerOptions;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     MapView mMapView;
     private GoogleMap googleMap;
+
+    private LatLng center;
+    private TextView markerText;
+    private LinearLayout markerLayout;
+    Button setLocationButton,btCancel;
+
+    boolean isVisible = true;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +88,7 @@ public class HomeFragment extends Fragment {
         double latitude = 17.385044;
         double longitude = 78.486671;
 
+
         // create marker
         MarkerOptions marker = new MarkerOptions().position(
                 new LatLng(latitude, longitude)).title("Hello Maps");
@@ -79,14 +98,69 @@ public class HomeFragment extends Fragment {
                 .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
 
         // adding marker
-        googleMap.addMarker(marker);
+        //googleMap.addMarker(marker);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(17.385044, 78.486671)).zoom(12).build();
+                .target(new LatLng(6.90229208, 79.86143364)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
 
+        //markerText = (TextView) v.findViewById(R.id.locationMarkertext);
+        final TextView Address = (TextView) v.findViewById(R.id.adressText);
+        markerLayout = (LinearLayout) v.findViewById(R.id.locationMarker);
+        setLocationButton  =(Button) v.findViewById(R.id.locationMarkerButton);
+        btCancel =(Button) v.findViewById(R.id.btclose);
 
+        LatLng latLong = new LatLng(6.90229208,79.861433647);
+        CameraPosition co = new CameraPosition.Builder()
+                .target(latLong).zoom(19f).tilt(70).build();
+
+        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+
+            @Override
+            public void onCameraChange(CameraPosition arg0) {
+                // TODO Auto-generated method stub
+                center = googleMap.getCameraPosition().target;
+
+                //markerText.setText(" Set your Location ");
+
+                if (isVisible){
+                    googleMap.clear();
+                    markerLayout.setVisibility(View.VISIBLE);
+                    System.out.println("fdsafdsfdsfsd" + String.valueOf(center.latitude));
+                    Address.setText(String.valueOf(center.latitude) + " " + String.valueOf(center.longitude));
+                }
+
+
+
+
+            }
+        });
+
+        setLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isVisible) {
+                    markerLayout.setVisibility(View.INVISIBLE);
+                    isVisible = false;
+                }
+                System.out.println(center.latitude);
+                MarkerOptions m = new MarkerOptions().position(center).title("pickup");
+                m.icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                googleMap.addMarker(m);
+
+            }
+        });
+
+        btCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                markerLayout.setVisibility(View.VISIBLE);
+                isVisible = true;
+                googleMap.clear();
+            }
+        });
 
 
 
@@ -116,5 +190,25 @@ public class HomeFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }
