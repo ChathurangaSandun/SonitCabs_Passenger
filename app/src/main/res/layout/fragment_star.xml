@@ -4,7 +4,69 @@
     tools:context="com.example.chathuranga_pamba.sonitcabs_passenger.StarFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="star" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Rate Us Today"
+            android:id="@+id/textView12"
+            android:layout_gravity="center_horizontal"
+            android:textSize="40dp"
+            android:layout_marginTop="50dp" />
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="100px"
+            android:id="@+id/ratingBar"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginBottom="50dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.02"
+            android:id="@+id/linearLayout9"
+            android:layout_below="@+id/linearLayout3"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rate"
+                android:id="@+id/button3"
+                android:layout_weight="50"
+                android:background="@color/buttonBlue"
+                android:textColor="@color/white" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:id="@+id/button4"
+                android:layout_weight="50"
+                android:background="@color/colorAccent"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
 </RelativeLayout>
