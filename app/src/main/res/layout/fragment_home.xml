@@ -2,6 +2,61 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.chathuranga_pamba.sonitcabs_passenger.HomeFragment">
+<!--
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="110dp"
+        android:id="@+id/abouve"
+        android:background="#F7F7F7"
+         >
+        <EditText
+            android:id="@+id/etPickupBox"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/styyles"
+            android:hint="Put pick up pin "
+            android:paddingLeft="10dp"
+            android:inputType="textVisiblePassword"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+        </EditText>
+
+        <EditText
+            android:id="@+id/etDropoffBox"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:background="@drawable/styyles"
+            android:hint="Add Drop Off Address"
+            android:paddingLeft="10dp"
+            android:inputType="textVisiblePassword"
+            android:layout_below="@+id/etPickupBox"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/button5"
+            android:layout_toStartOf="@+id/button5"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="5dp">
+
+        </EditText>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:id="@+id/button5"
+            android:background="@drawable/roundedbutton"
+            android:layout_below="@+id/etPickupBox"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/white"
+            android:layout_marginLeft="0dp" />
+
+    </RelativeLayout>-->
 
     <com.google.android.gms.maps.MapView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,13 +65,77 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment"
-        >
-
-
-
+        android:layout_below="@+id/abouve"
+        android:layout_above="@+id/mapbottomcontainer">
     </com.google.android.gms.maps.MapView>
 
+    <LinearLayout
+        android:id="@+id/locationMarker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+        android:gravity="center"
+        android:orientation="vertical" >
 
+        <TextView
+            android:id="@+id/locationMarkertext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner_map"
+            android:gravity="center"
+            android:minWidth="180dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:text=" Set your Location "
+            android:textColor="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add_marker" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@android:color/white"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Selected Location"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#28b54c" />
+
+        <TextView
+            android:id="@+id/adressText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="Getting location"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/mapbottomcontainer"
+        android:layout_alignParentBottom="true"
+        android:background="#F7F7F7"></FrameLayout>
 
 
 </RelativeLayout>
