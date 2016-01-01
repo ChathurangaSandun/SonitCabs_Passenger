@@ -48,6 +48,12 @@ public class HomeActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.fragment_container,fragment);
         fragmentTransaction.commit();
 
+
+
+
+
+
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +69,7 @@ public class HomeActivity extends AppCompatActivity
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
 
 
