@@ -1,5 +1,6 @@
 package com.example.chathuranga_pamba.sonitcabs_passenger;
 
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,6 +27,9 @@ public class HomeActivity extends AppCompatActivity
     // Session Manager Class
     SessionManager session;
     boolean homeFramentFlag = true;
+
+
+
 
 
 

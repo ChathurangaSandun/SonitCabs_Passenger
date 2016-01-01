@@ -10,7 +10,7 @@ import android.content.Intent;
 public final class CommonUtilities {
 
     // give your server registration url here
-    static final String SERVER_URL = "http://192.168.56.1/FinalAndroidConnector/";
+    static final String SERVER_URL = "http://192.168.98.2/FinalAndroidConnector/";
     //static final String SERVER_URL = "http://clivekumara.esy.es/FinalAndroidConnector/";
     //static final String SERVER_URL = "http://sonitcabstaxilocator.comoj.com/FinalAndroidConnector/";
 
