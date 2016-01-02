@@ -75,8 +75,9 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:layout_below="@+id/btBook"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="83dp">
 
         <Button
             android:id="@+id/locationMarkerButton"
@@ -167,17 +168,6 @@
     </LinearLayout>
 
 
-
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/mapbottomcontainer"
-        android:layout_alignParentBottom="true"
-        android:background="#F7F7F7"></FrameLayout>
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -211,6 +201,33 @@
             android:hint="Enter Address"
             android:textSize="16sp" />
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/driverDetailContainer"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:translationY="400dp">
+
+    </FrameLayout>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Book Now"
+        android:id="@+id/btBook"
+        android:layout_gravity="right|top"
+        android:layout_below="@+id/destinationLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/buttonBlue"
+        android:textColor="@color/white"/>
 
 
 </RelativeLayout>

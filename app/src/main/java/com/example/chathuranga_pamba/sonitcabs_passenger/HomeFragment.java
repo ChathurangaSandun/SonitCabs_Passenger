@@ -1,6 +1,7 @@
 package com.example.chathuranga_pamba.sonitcabs_passenger;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -11,12 +12,17 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -79,7 +85,7 @@ import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.
  */
 public class HomeFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, View.OnTouchListener{
 
     MapView mMapView;
     private GoogleMap googleMap;
@@ -87,7 +93,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     private LatLng center;
     private TextView markerText;
     private LinearLayout markerLayout,destinationTextLayout;
-    Button setLocationButton;
+    Button setLocationButton,btBook;
     ImageButton btCancel;
 
     boolean isVisible = true;
@@ -95,6 +101,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     Geocoder geocoder;
 
     TextView tvAddress;
+    FrameLayout driverDetailContainer;
+    float mLastPosisionY;
 
 
 
@@ -194,7 +202,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
                 //markerText.setText(" Set your Location ");
 
-                if (isVisible){
+                if (isVisible) {
                     googleMap.clear();
                     markerLayout.setVisibility(View.VISIBLE);
                     System.out.println("fdsafdsfdsfsd" + String.valueOf(center.latitude) + " " + String.valueOf(center.longitude));
@@ -234,7 +242,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
                     System.out.println("_______________________________________________________");*/
 
-                   // System.out.println(getAddressFromGPSData(center.latitude, center.longitude));
+                    // System.out.println(getAddressFromGPSData(center.latitude, center.longitude));
                     String getAddress = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + center.latitude + ","
                             + center.longitude + "&sensor=true";
 
@@ -249,16 +257,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                     task.execute(p);
 
 
-
-
                     System.out.println("___________________________________________________________________");
 
 
-
-
                 }
-
-
 
 
             }
@@ -272,12 +274,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                     isVisible = false;
                 }
                 System.out.println(center.latitude);
-                MarkerOptions m = new MarkerOptions().position(new LatLng((center.latitude),(center.longitude))).title("pickup");
+                MarkerOptions m = new MarkerOptions().position(new LatLng((center.latitude), (center.longitude))).title("pickup");
                 m.icon(BitmapDescriptorFactory
                         .defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 googleMap.addMarker(m);
-
-
 
 
                 //getAddress
@@ -296,13 +296,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                 task.execute(p);
 
 
-
-
                 System.out.println("___________________________________________________________________");
 
 
                 destinationTextLayout.setVisibility(View.VISIBLE);
-
 
 
             }
@@ -319,6 +316,28 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
             }
         });
+
+        btBook = (Button) v.findViewById(R.id.btBook);
+        driverDetailContainer = (FrameLayout) v.findViewById(R.id.driverDetailContainer);
+        FragmentTransaction fragmentTransaction= getChildFragmentManager().beginTransaction();
+        fragmentTransaction.add(driverDetailContainer.getId(),new DriverDetailfragment());
+        fragmentTransaction.commit();
+
+        btBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OvershootInterpolator interpolar = new OvershootInterpolator(10);
+                driverDetailContainer.animate().setInterpolator(interpolar).translationYBy(-200).setDuration(200);
+            }
+        });
+
+        driverDetailContainer.setOnTouchListener(this);
+
+
+
+
+
+
 
 
 
@@ -370,6 +389,36 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        System.out.println("Ontouch");
+
+        switch (event.getAction()){
+
+            case MotionEvent.ACTION_DOWN:
+                mLastPosisionY = event.getY();
+                return  true;
+            case MotionEvent.ACTION_MOVE:
+                System.out.println("move");
+                float currentPossision = event.getY();
+                float delaY = mLastPosisionY-currentPossision;
+                float transY = v.getTranslationY();
+                System.out.println(delaY);
+                transY -= delaY;
+
+                if(transY<0){
+                    transY = 0;
+                }
+
+                return true;
+
+            default:
+                return  v.onTouchEvent(event);
+
+
+        }
+
+    }
 
 
     ////
@@ -431,6 +480,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
 
     }
+
 
 
 
