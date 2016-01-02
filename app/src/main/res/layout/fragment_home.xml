@@ -75,9 +75,9 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
+        android:layout_marginTop="200dp"
         android:layout_below="@+id/btBook"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="83dp">
+        android:layout_centerHorizontal="true">
 
         <Button
             android:id="@+id/locationMarkerButton"
