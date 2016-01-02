@@ -1,5 +1,7 @@
 package com.example.chathuranga_pamba.sonitcabs_passenger;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -102,6 +106,7 @@ public class HomeActivity extends AppCompatActivity
         String name = user.get(SessionManager.KEY_NAME);
 
         System.out.println("session------------->"+name);
+
 
 
 
