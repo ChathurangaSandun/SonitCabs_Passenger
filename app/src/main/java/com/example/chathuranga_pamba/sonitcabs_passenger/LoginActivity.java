@@ -212,7 +212,9 @@ public class LoginActivity extends AppCompatActivity {
                     // Creating user login session
                     // For testing i am stroing name
                     // Use user real data
-                    session.createLoginSession(username);
+
+                    session.createLoginSession(username,String.valueOf(loginUser.getCustomerID()));
+
 
 
                     Intent homeActivity = new Intent(getApplicationContext(), HomeActivity.class);

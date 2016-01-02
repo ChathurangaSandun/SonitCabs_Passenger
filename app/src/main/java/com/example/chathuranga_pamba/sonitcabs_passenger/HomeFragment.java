@@ -75,6 +75,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Locale;
 import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.SERVER_URL;
@@ -112,6 +113,11 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //get data from home activity
+        int customerID = getArguments().getInt("CUSTOMERID");
+        System.out.println("cusid->"+String.valueOf(customerID));
+
         // inflate and return the layout
         View v = inflater.inflate(R.layout.fragment_home, container,false);
         mMapView = (MapView) v.findViewById(R.id.mapp);

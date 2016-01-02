@@ -48,13 +48,29 @@ public class HomeActivity extends AppCompatActivity
 
         //session object
         session = new SessionManager(getApplicationContext());
+        //sessions
+        session.checkLogin();
+
+        // get user data from session
+        HashMap<String, String> user = session.getUserDetails();
+
+        // name
+        String name = user.get(SessionManager.KEY_NAME);
+        String customerID = user.get(SessionManager.KEY_USERID);
 
 
+        System.out.println("session------------->"+name);
+        System.out.println("session------------->"+customerID);
 
         HomeFragment fragment = new HomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("CUSTOMERID", Integer.parseInt(customerID));
+        fragment.setArguments(bundle);
+
         FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container,fragment);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
+
 
 
 
@@ -96,16 +112,11 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-        //sessions
-        session.checkLogin();
 
-        // get user data from session
-        HashMap<String, String> user = session.getUserDetails();
 
-        // name
-        String name = user.get(SessionManager.KEY_NAME);
 
-        System.out.println("session------------->"+name);
+
+
 
 
 

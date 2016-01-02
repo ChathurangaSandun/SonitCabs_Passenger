@@ -7,13 +7,15 @@ public class User {
 
     private String userName;
     private String userType;
+    private int customerID;
 
     public User() {
     }
 
-    public User(String userName, String userType) {
+    public User(String userName, String userType,int customerID) {
         this.userName = userName;
         this.userType = userType;
+        this.customerID = customerID;
     }
 
     public String getUserName() {
@@ -30,5 +32,13 @@ public class User {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public int getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID = customerID;
     }
 }

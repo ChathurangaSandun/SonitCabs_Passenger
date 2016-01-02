@@ -27,7 +27,8 @@ public class UsesrJSONParser {
                 User user = new User();
 
                 user.setUserName(obj.getString("user_name"));
-                user.setUserType (obj.getString("user_type"));
+                user.setUserType(obj.getString("user_type"));
+                user.setCustomerID(obj.getInt("customer_id"));
 
                 userList.add(user);
             }
