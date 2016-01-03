@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 String phNum = "tel:" + "0718256773";
                 myIntent.setData(Uri.parse(phNum));
                 if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
+
                     //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,

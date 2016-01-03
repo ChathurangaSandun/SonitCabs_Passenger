@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_above="@+id/mapbottomcontainer">
+        >
     </com.google.android.gms.maps.MapView>
 
     <LinearLayout
@@ -75,8 +75,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="200dp"
-        android:layout_below="@+id/btBook"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true">
 
         <Button
@@ -113,7 +112,8 @@
         android:id="@+id/linearLayout11"
         android:layout_marginRight="20dp"
         android:background="@color/white"
-        android:layout_marginLeft="10dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
     <LinearLayout
         android:layout_width="287dp"
         android:layout_height="wrap_content"
@@ -191,8 +191,8 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#050DA6" />
 
-        <EditText
-            android:id="@+id/textView14"
+        <AutoCompleteTextView
+            android:id="@+id/atv_dropoffplace"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -202,32 +202,38 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/driverDetailContainer"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"
-        android:translationY="400dp">
-
-    </FrameLayout>
-
-    <Button
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Book Now"
-        android:id="@+id/btBook"
-        android:layout_gravity="right|top"
-        android:layout_below="@+id/destinationLayout"
+        android:layout_height="250dp"
+        android:id="@+id/belowContainer"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/buttonBlue"
-        android:textColor="@color/white"/>
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="165dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/bottemFramLayout"></FrameLayout>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="ESTIMATE FIRE"
+            android:id="@+id/btBook"
+            android:layout_below="@+id/destinationLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:background="#12B307"
+            android:textColor="@color/white"
+            />
+    </LinearLayout>
 
 
 </RelativeLayout>

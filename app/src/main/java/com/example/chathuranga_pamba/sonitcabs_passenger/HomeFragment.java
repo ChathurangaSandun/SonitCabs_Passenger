@@ -4,6 +4,7 @@ package com.example.chathuranga_pamba.sonitcabs_passenger;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -14,6 +15,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,13 +24,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.DirectionsJSONParser;
+import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.PlaceJSONParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -59,6 +66,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import org.apache.http.HttpEntity;
@@ -75,7 +84,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.SERVER_URL;
@@ -97,6 +112,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     Button setLocationButton,btBook;
     ImageButton btCancel;
 
+    String estimateTime,estimateDistance;
+
     boolean isVisible = true;
 
     Geocoder geocoder;
@@ -105,6 +122,20 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     FrameLayout driverDetailContainer;
     float mLastPosisionY;
 
+    AutoCompleteTextView atvDropOff;
+
+    PlacesTask placesTask;
+    ParserTask parserTask;
+
+    String formattedAddress;
+
+    AlertDialogManager alert = new AlertDialogManager();
+    Polyline polyline;
+
+    PreReservationFragment preReservationFragment;
+    FragmentTransaction transaction;
+
+    int customerID;
 
 
 
@@ -115,7 +146,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                              Bundle savedInstanceState) {
 
         //get data from home activity
-        int customerID = getArguments().getInt("CUSTOMERID");
+         customerID = getArguments().getInt("CUSTOMERID");
         System.out.println("cusid->"+String.valueOf(customerID));
 
         // inflate and return the layout
@@ -286,6 +317,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                 googleMap.addMarker(m);
 
 
+
+
                 //getAddress
 
                 String getAddress = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + center.latitude + ","
@@ -324,21 +357,87 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         });
 
         btBook = (Button) v.findViewById(R.id.btBook);
-        driverDetailContainer = (FrameLayout) v.findViewById(R.id.driverDetailContainer);
-        FragmentTransaction fragmentTransaction= getChildFragmentManager().beginTransaction();
-        fragmentTransaction.add(driverDetailContainer.getId(),new DriverDetailfragment());
-        fragmentTransaction.commit();
+
 
         btBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OvershootInterpolator interpolar = new OvershootInterpolator(10);
-                driverDetailContainer.animate().setInterpolator(interpolar).translationYBy(-200).setDuration(200);
+
+                if("ESTIMATE FIRE".equals(btBook.getText().toString())){
+                    if(!atvDropOff.getText().equals("")) {
+                        String[] split = formattedAddress.split(",");
+                        System.out.println(split[split.length - 1].trim());
+                        if ("Sri Lanka".equals(split[split.length - 1].trim())) {
+                            if(! "Unnamed Road".equals(split[0].trim())){
+
+
+                                btBook.setText("BOOK NOW");
+
+                                //show paths
+                                System.out.println("fdfdffddfdfffffffffff");
+                                showPath();
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(6.7229806, 80.0646682), 12.0f));
+
+
+
+
+
+                                //btBook.setBackgroundColor();
+
+
+
+
+                            }else{
+                                alert.showAlertDialog(getActivity(), "Location not correct", "Invalied pickup Location", false);
+                            }
+
+
+                        } else {
+                            alert.showAlertDialog(getActivity(), "Location not correct", "Invalied pickup Location", false);
+                        }
+                    }else {
+                        alert.showAlertDialog(getActivity(), "Location not filled", "Fill correctly Locations", false);
+                    }
+
+
+                }else{
+                    System.out.println("dfd");
+                    requestData();
+
+
+                }
+
+
+
+
             }
         });
 
-        driverDetailContainer.setOnTouchListener(this);
 
+
+
+        atvDropOff = (AutoCompleteTextView) v.findViewById(R.id.atv_dropoffplace);
+        atvDropOff.setThreshold(1);
+        atvDropOff.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                System.out.println("dropoff atv");
+                placesTask = new PlacesTask();
+                placesTask.execute(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 
 
@@ -431,7 +530,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     private class GetAddressTask extends AsyncTask<RequestPackage,String,String> {
         //AlertDialogManager alert = new AlertDialogManager();
 
-        String formattedAddress = "";
+
 
 
         @Override
@@ -472,6 +571,11 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                             .getJSONArray("results");
                     JSONObject addressItem = arrayOfAddressResults.getJSONObject(0);
                     formattedAddress = addressItem.getString("formatted_address");
+                    tvAddress.setText(formattedAddress);
+
+
+
+
                 } catch (JSONException e) {
 
                     e.printStackTrace();
@@ -479,13 +583,403 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
             }
 
-            tvAddress.setText( formattedAddress);
+
+
+
+
 
 
         }
 
 
     }
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            URL url = new URL(strUrl);
+
+            // Creating an http connection to communicate with url
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            // Connecting to url
+            urlConnection.connect();
+
+            // Reading data from url
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while( ( line = br.readLine()) != null){
+                sb.append(line);
+            }
+
+            data = sb.toString();
+
+            br.close();
+
+        }catch(Exception e){
+            Log.d("Exception while ", e.toString());
+        }finally{
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
+    }
+
+    private class PlacesTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... place) {
+            // For storing data from web service
+            String data = "";
+
+            // Obtain browser key from https://code.google.com/apis/console
+            String key = "key=AIzaSyBMzLqGzmt3zpqNM4PWnzSll0m0WznKapk";
+
+            String input="";
+
+            try {
+                input = "input=" + URLEncoder.encode(place[0], "utf-8");
+            } catch (UnsupportedEncodingException e1) {
+                e1.printStackTrace();
+            }
+
+            // place type to be searched
+            String types = "types=geocode";
+
+            // Sensor enabled
+            String sensor = "sensor=false";
+
+            // Building the parameters to the web service
+            String parameters = input+"&"+types+"&"+sensor+"&"+key;
+
+
+            // Output format
+            String output = "json";
+
+            // Building the url to the web service
+            String url = "https://maps.googleapis.com/maps/api/place/autocomplete/"+output+"?"+parameters;
+
+            System.out.println(url);
+
+            try{
+                // Fetching the data from we service
+                data = downloadUrl(url);
+            }catch(Exception e){
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            // Creating ParserTask
+            parserTask = new ParserTask();
+
+            // Starting Parsing the JSON string returned by Web Service
+            parserTask.execute(result);
+        }
+    }
+    /** A class to parse the Google Places in JSON format */
+    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String,String>>>{
+
+        JSONObject jObject;
+
+        @Override
+        protected List<HashMap<String, String>> doInBackground(String... jsonData) {
+
+            List<HashMap<String, String>> places = null;
+
+            PlaceJSONParser placeJsonParser = new PlaceJSONParser();
+
+            try{
+                jObject = new JSONObject(jsonData[0]);
+
+                // Getting the parsed data as a List construct
+                places = placeJsonParser.parse(jObject);
+
+                System.out.println(places.get(0).keySet());
+
+            }catch(Exception e){
+                Log.d("Exception",e.toString());
+            }
+            return places;
+        }
+
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> result) {
+
+            String[] from = new String[] { "description"};
+            int[] to = new int[] { android.R.id.text1 };
+
+            // Creating a SimpleAdapter for the AutoCompleteTextView
+            //TODO some error
+            SimpleAdapter adapter = new SimpleAdapter(getActivity(), result, android.R.layout.simple_list_item_1, from, to);
+
+            // Setting the adapter
+            atvDropOff.setAdapter(adapter);
+        }
+    }
+
+
+
+    //show polilines
+    public void showPath(){
+
+        String url = getDistanceOnRoad(center.latitude,center.longitude,6.7229806,80.0646682);
+        DownloadTask downloadTask = new DownloadTask();
+
+        downloadTask.execute(url);
+    }
+
+    private String getDistanceOnRoad(double latitude, double longitude,
+                                     double prelatitute, double prelongitude) {
+        String result_in_kms = "";
+        String url = "http://maps.google.com/maps/api/directions/json?origin="
+                + latitude + "," + longitude + "&destination=" + prelatitute
+                + "," + prelongitude + "&sensor=false&units=metric";
+
+
+        System.out.println(url);
+        return url;
+    }
+
+    // Fetches data from url passed
+    private class DownloadTask extends AsyncTask<String, Void, String>{
+
+        // Downloading data in non-ui thread
+        @Override
+        protected String doInBackground(String... url) {
+
+            // For storing data from web service
+            String data = "";
+
+            try{
+                // Fetching the data from web service
+                data = downloadUrl(url[0]);
+            }catch(Exception e){
+                Log.d("Background Task",e.toString());
+            }
+            return data;
+        }
+
+        // Executes in UI thread, after the execution of
+        // doInBackground()
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            DrawPath drawPathTasl = new DrawPath();
+
+            // Invokes the thread for parsing the JSON data
+            drawPathTasl.execute(result);
+
+        }
+    }
+
+    private class DrawPath extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>>
+    {
+
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+            System.out.println(jsonData[0]);
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+
+            try{
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parsers = new DirectionsJSONParser();
+
+
+
+                // Starts parsing data
+                routes = parsers.parse(jObject);
+                parsers.getDistance(jObject);
+                estimateDistance = parsers.getDistance();
+                System.out.println("---------");
+                System.out.println(estimateDistance);
+                estimateTime = parsers.getTime();
+
+                 preReservationFragment = new PreReservationFragment();
+
+                //send distance to preReservationFragment
+                Bundle bundle = new Bundle();
+
+                estimateDistance = estimateDistance.trim().substring(0,estimateDistance.length()-2);
+                System.out.println(estimateDistance.trim());
+
+                if(Double.parseDouble(estimateDistance) != 0){
+                    bundle.putDouble("DISTANCE", Double.parseDouble(estimateDistance.trim()));
+                }else {
+                    bundle.putInt("DISTANCE", 0);
+                }
+
+
+                // set Fragmentclass Arguments
+                preReservationFragment.setArguments(bundle);
+
+
+                transaction = getChildFragmentManager().beginTransaction();
+                transaction.add(R.id.bottemFramLayout, preReservationFragment, "pre");
+                transaction.commit();
+
+
+
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            ArrayList<LatLng> points = null;
+            PolylineOptions lineOptions = null;
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            // Traversing through all the routes
+            for(int i=0;i<result.size();i++){
+                points = new ArrayList<LatLng>();
+                lineOptions = new PolylineOptions();
+
+                // Fetching i-th route
+                List<HashMap<String, String>> path = result.get(i);
+
+                // Fetching all the points in i-th route
+                for(int j=0;j<path.size();j++){
+                    HashMap<String,String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                // Adding all the points in the route to LineOptions
+                lineOptions.addAll(points);
+                lineOptions.width(10);
+                lineOptions.color(Color.RED);
+            }
+
+            // Drawing polyline in the Google Map for the i-th route
+            if(polyline != null){
+                polyline.remove();
+            }
+            polyline = googleMap.addPolyline(lineOptions);
+
+        }
+    }
+
+    ///////send reservation
+    private void requestData() {
+
+        String loginURL = SERVER_URL+"AddReservation.php";
+        Log.e("Chahturanga      URL", loginURL);
+
+        RequestPackage p = new RequestPackage();
+        p.setMethod("GET");
+        p.setUri(loginURL);
+        p.setParam("customerID", String.valueOf(customerID));
+        //p.setParam("date",date );
+        //p.setParam("time", time);
+        p.setParam("pkx",String.valueOf(center.latitude) );
+        p.setParam("pky",String.valueOf(center.longitude) );
+        p.setParam("pkAddress",formattedAddress );
+        p.setParam("dox",String.valueOf(6.7229806));
+        p.setParam("doy",String.valueOf(80.0646682) );
+        p.setParam("doAddress","horana" );
+
+
+        Log.e("Chahturanga      URLgo", loginURL);
+
+        AddReservationTask task = new AddReservationTask();
+        task.execute(p);
+    }
+
+    private class AddReservationTask extends AsyncTask<RequestPackage,String,String> {
+        //AlertDialogManager alert = new AlertDialogManager();
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //pbLogin.setVisibility(View.VISIBLE);
+            //btLogin.setEnabled(false);
+
+        }
+
+
+
+        @Override
+        protected String doInBackground(RequestPackage... params) {
+
+            String content = HttpManager.getData(params[0]);
+            Log.e("Chahturanga    content",content);
+            return content;
+        }
+
+
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            Log.e("Chahturanga      result", result);
+
+
+            String reservationID = result;
+
+            gotpShowDetailActivity(reservationID);
+
+        }
+
+
+    }
+
+    private  void gotpShowDetailActivity(String reservationID){
+
+
+
+
+
+        DriverReqsetFragment driverReqsetFragment = new DriverReqsetFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("RESERVATIONID",reservationID);
+
+        driverReqsetFragment.setArguments(bundle);
+        //TODO correct fragemtn error
+
+        FragmentTransaction t = getFragmentManager().beginTransaction();
+        t = getChildFragmentManager().beginTransaction();
+        t.add(R.id.bottemFramLayout, driverReqsetFragment);
+        t.addToBackStack(null);
+        t.commit();
+
+
+    }
+
+
+
 
 
 
