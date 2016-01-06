@@ -352,6 +352,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                 isVisible = true;
                 googleMap.clear();
                 destinationTextLayout.setVisibility(View.INVISIBLE);
+                btBook.setText("ESTIMATE FIRE");
 
             }
         });
@@ -957,10 +958,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     }
 
     private  void gotpShowDetailActivity(String reservationID){
-
-
-
-
 
         DriverReqsetFragment driverReqsetFragment = new DriverReqsetFragment();
         Bundle bundle = new Bundle();
