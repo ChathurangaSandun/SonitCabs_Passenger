@@ -5,24 +5,27 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal|top">
+        android:layout_gravity="center_horizontal|top"
+        android:background="@color/white">
+
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="5dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageView3"
-                android:src="@drawable/ic_waiting"
+                android:src="@drawable/ic_taxicar"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp" />
 
@@ -30,14 +33,16 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Finding perfect driver...."
-                    android:id="@+id/textView26" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Finding.........."
+                    android:id="@+id/tvFinding" />
 
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -47,10 +52,65 @@
                     android:indeterminate="false"
                     android:max="100"
                     android:progress="0"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp" />
+
             </LinearLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:weightSum="99"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tvName"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center"
+                android:layout_weight="38.03" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tvPlateNumber"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="29.04"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"></LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:weightSum="50">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tvTimming"
+                android:layout_weight="25"
+                android:layout_marginLeft="10dp" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 </FrameLayout>

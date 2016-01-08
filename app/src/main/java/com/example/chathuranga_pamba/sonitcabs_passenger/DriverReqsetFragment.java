@@ -2,6 +2,7 @@ package com.example.chathuranga_pamba.sonitcabs_passenger;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,11 +11,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.DirectionsJSONParser;
 import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.JobDetailJSONParser;
 import com.example.chathuranga_pamba.sonitcabs_passenger.models.JobDetail;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.vision.Frame;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,6 +49,7 @@ import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.
 public class DriverReqsetFragment extends Fragment {
     ProgressBar progressBar;
     View v;
+    GoogleMap googleMap;
 
     Timer timer;
     int a;
@@ -36,6 +57,18 @@ public class DriverReqsetFragment extends Fragment {
     AlertDialogManager alert = new AlertDialogManager();
 
     String reservaitonID;
+
+    JobDetail jb;
+
+    double pickupLat,pickuoLong;
+
+    String estimateTime,estimateDistance;
+
+    Polyline polyline;
+    TextView tvTimming,tvName,tvPlateNumber,tvDistance;
+
+
+
 
     public DriverReqsetFragment() {
         // Required empty public constructor
@@ -52,6 +85,8 @@ public class DriverReqsetFragment extends Fragment {
         progressBar.setProgress(0);
 
         reservaitonID=getArguments().getString("RESERVATIONID");
+        pickupLat = getArguments().getDouble("CENTERLAT");
+        pickuoLong= getArguments().getDouble("CENTERLONG");
 
 
 
@@ -88,8 +123,14 @@ public class DriverReqsetFragment extends Fragment {
                 System.out.println(a);
                 a++;
             }
-        }, 1000, 5000);
+        }, 1000, 6000);
 
+
+
+        tvTimming = (TextView)v.findViewById(R.id.tvTimming);
+
+        tvName = (TextView)v.findViewById(R.id.tvName);
+        tvPlateNumber = (TextView)v.findViewById(R.id.tvPlateNumber);
 
 
 
@@ -170,7 +211,7 @@ public class DriverReqsetFragment extends Fragment {
                 Log.e("Chahturanga      result", result);
                 timer.cancel();
                 progressBar.setProgress(100);
-                JobDetail jb;
+
 
 
                 List<JobDetail> jobdetail = JobDetailJSONParser.parseFeed(result);
@@ -196,17 +237,28 @@ public class DriverReqsetFragment extends Fragment {
                 bundle.putString("TPNUMBER","0"+jb.getTelephoneNumber());
                 //bundle.putString("NAME",jb.getFirstName());
 
+                HomeFragment homeFragment = (HomeFragment) getParentFragment();
+                 googleMap = homeFragment.getmMapView();
+                MarkerOptions marker = new MarkerOptions().position(
+                        new LatLng(jb.getLatitude(),jb.getLongtiitude())).title("car posistion");
+                googleMap.addMarker(marker);
+
                 driverNamesAndCarDetailsFragment.setArguments(bundle);
-                //TODO correct fragemtn error
 
-                FragmentTransaction t = getFragmentManager().beginTransaction();
+
+                /*FragmentTransaction t = null;
                 t = getChildFragmentManager().beginTransaction();
-                //t.add(R.id.bottemFramLayout, driverNamesAndCarDetailsFragment);
-                //t.addToBackStack(null);
-                //t.commit();
+                t.replace(frameLayout.getId(), driverNamesAndCarDetailsFragment);
+                t.commit();*/
 
 
-                //showPath();*/
+
+                showPath();
+
+                tvName.setText(jb.getFirstName());
+
+                tvPlateNumber.setText(jb.getPlateNumber());
+
 
 
             }
@@ -215,5 +267,188 @@ public class DriverReqsetFragment extends Fragment {
         }
     }
 
+    public void showPath(){
 
+        String url = getDistanceOnRoad(jb.getLatitude(),jb.getLongtiitude(),pickupLat,pickuoLong);
+        DownloadTask downloadTask = new DownloadTask();
+
+        downloadTask.execute(url);
+    }
+
+    private String getDistanceOnRoad(double latitude, double longitude,
+                                     double prelatitute, double prelongitude) {
+        String result_in_kms = "";
+        String url = "http://maps.google.com/maps/api/directions/json?origin="
+                + latitude + "," + longitude + "&destination=" + prelatitute
+                + "," + prelongitude + "&sensor=false&units=metric";
+
+
+        System.out.println(url);
+        return url;
+    }
+
+    // Fetches data from url passed
+    private class DownloadTask extends AsyncTask<String, Void, String>{
+
+        // Downloading data in non-ui thread
+        @Override
+        protected String doInBackground(String... url) {
+
+            // For storing data from web service
+            String data = "";
+
+            try{
+                // Fetching the data from web service
+                data = downloadUrl(url[0]);
+            }catch(Exception e){
+                Log.d("Background Task",e.toString());
+            }
+            return data;
+        }
+
+        // Executes in UI thread, after the execution of
+        // doInBackground()
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            DrawPath drawPathTasl = new DrawPath();
+
+            // Invokes the thread for parsing the JSON data
+            drawPathTasl.execute(result);
+
+        }
+    }
+
+    private class DrawPath extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>>
+    {
+
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+            System.out.println(jsonData[0]);
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+
+            try{
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parsers = new DirectionsJSONParser();
+
+
+
+                // Starts parsing data
+                routes = parsers.parse(jObject);
+                parsers.getDistance(jObject);
+                estimateDistance = parsers.getDistance();
+                System.out.println("---------");
+                System.out.println(estimateDistance);
+                estimateTime = parsers.getTime();
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            System.out.println(result);
+
+            ArrayList<LatLng> points = null;
+            PolylineOptions lineOptions = null;
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            // Traversing through all the routes
+            for(int i=0;i<result.size();i++){
+                points = new ArrayList<LatLng>();
+                lineOptions = new PolylineOptions();
+
+                // Fetching i-th route
+                List<HashMap<String, String>> path = result.get(i);
+
+                // Fetching all the points in i-th route
+                for(int j=0;j<path.size();j++){
+                    HashMap<String,String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                // Adding all the points in the route to LineOptions
+                lineOptions.addAll(points);
+                lineOptions.width(10);
+                lineOptions.color(Color.BLUE);
+            }
+
+            // Drawing polyline in the Google Map for the i-th route
+            if(polyline != null){
+                polyline.remove();
+            }
+            polyline =googleMap.addPolyline(lineOptions);
+
+            tvTimming.setText("Please wait atleast "+estimateTime +"  and It comes from "+estimateDistance+ "   ");
+
+        }
+    }
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            URL url = new URL(strUrl);
+
+            // Creating an http connection to communicate with url
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            // Connecting to url
+            urlConnection.connect();
+
+            // Reading data from url
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while( ( line = br.readLine()) != null){
+                sb.append(line);
+            }
+
+            data = sb.toString();
+
+            br.close();
+
+        }catch(Exception e){
+            Log.d("Exception while ", e.toString());
+        }finally{
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
+        super.onSaveInstanceState(outState);
+    }
 }

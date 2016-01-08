@@ -136,6 +136,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     FragmentTransaction transaction;
 
     int customerID;
+    View v;
+
+    LatLng pickupLatLng;
 
 
 
@@ -150,7 +153,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         System.out.println("cusid->"+String.valueOf(customerID));
 
         // inflate and return the layout
-        View v = inflater.inflate(R.layout.fragment_home, container,false);
+         v = inflater.inflate(R.layout.fragment_home, container,false);
         mMapView = (MapView) v.findViewById(R.id.mapp);
         mMapView.onCreate(savedInstanceState);
 
@@ -158,29 +161,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
         System.out.println("_______________________________________________________");
 
-        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
+        //Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         double latitude = 6.90229208;
         double longitude = 79.86143364;
 
-        List<Address> addresses = null;
-        String addressText="";
-
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude,1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if(addresses != null && addresses.size() > 0 ){
-            Address address = addresses.get(0);
-
-            addressText = String.format("%s, %s, %s",
-                    address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
-                    address.getLocality(),
-                    address.getCountryName());
-        }else{
-            System.out.println("not address");
-        }
 
 
 
@@ -201,6 +185,11 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         // latitude and longitude
         double l1 = 17.385044;
         double l2 = 78.486671;
+        googleMap.setMyLocationEnabled(true);
+
+        GPSTracker gps = new GPSTracker(getActivity());
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gps.getLatitude(), gps.getLongitude()), 15));
+
 
 
         // create marker
@@ -212,8 +201,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
         // adding marker
         //googleMap.addMarker(marker);
-        CameraPosition cameraPosition = new CameraPosition.Builder()                .target(new LatLng(6.90229208, 79.86143364)).zoom(18).build();
-        googleMap.animateCamera(CameraUpdateFactory                .newCameraPosition(cameraPosition));
+        //CameraPosition cameraPosition = new CameraPosition.Builder()                .target(new LatLng(6.90229208, 79.86143364)).zoom(18).build();
+        //googleMap.animateCamera(CameraUpdateFactory                .newCameraPosition(cameraPosition));
 
 
         //markerText = (TextView) v.findViewById(R.id.locationMarkertext);
@@ -311,12 +300,12 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                     isVisible = false;
                 }
                 System.out.println(center.latitude);
+
+                pickupLatLng = new LatLng(center.latitude, center.longitude);
                 MarkerOptions m = new MarkerOptions().position(new LatLng((center.latitude), (center.longitude))).title("pickup");
                 m.icon(BitmapDescriptorFactory
                         .defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 googleMap.addMarker(m);
-
-
 
 
                 //getAddress
@@ -332,7 +321,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
                 Log.e("Chahturanga      URLgo", getAddress);
                 GetAddressTask task = new GetAddressTask();
-                task.execute(p);
+                 task.execute(p);
 
 
                 System.out.println("___________________________________________________________________");
@@ -358,6 +347,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         });
 
         btBook = (Button) v.findViewById(R.id.btBook);
+        btBook.setBackgroundColor(Color.GREEN);
 
 
         btBook.setOnClickListener(new View.OnClickListener() {
@@ -373,6 +363,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
 
                                 btBook.setText("BOOK NOW");
+                                btBook.setBackgroundColor(Color.BLUE);
 
                                 //show paths
                                 System.out.println("fdfdffddfdfffffffffff");
@@ -401,11 +392,19 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                     }
 
 
-                }else{
+                }else if("BOOK NOW".equals(btBook.getText().toString())){
                     System.out.println("dfd");
                     requestData();
 
+                    btBook.setText("CANCEL");
+                    btBook.setBackgroundColor(Color.RED);
 
+
+
+
+                }else if("CANCEL".equals(btBook.getText().toString())) {
+                    btBook.setText("ESTIMATE FIRE");
+                    btBook.setBackgroundColor(Color.GREEN);
                 }
 
 
@@ -831,7 +830,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
 
                 transaction = getChildFragmentManager().beginTransaction();
-                transaction.add(R.id.bottemFramLayout, preReservationFragment, "pre");
+                transaction.replace(R.id.bottemFramLayout, preReservationFragment, "pre");
                 transaction.commit();
 
 
@@ -962,17 +961,29 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         DriverReqsetFragment driverReqsetFragment = new DriverReqsetFragment();
         Bundle bundle = new Bundle();
         bundle.putString("RESERVATIONID",reservationID);
+        bundle.putDouble("CENTERLAT",pickupLatLng.latitude);
+        bundle.putDouble("CENTERLONG",pickupLatLng.longitude);
 
         driverReqsetFragment.setArguments(bundle);
         //TODO correct fragemtn error
 
         FragmentTransaction t = getFragmentManager().beginTransaction();
         t = getChildFragmentManager().beginTransaction();
-        t.add(R.id.bottemFramLayout, driverReqsetFragment);
+        t.replace(R.id.bottemFramLayout, driverReqsetFragment);
         t.addToBackStack(null);
         t.commit();
 
 
+    }
+
+    public GoogleMap getmMapView(){
+        return this.googleMap;
+
+
+    }
+
+    public View getFrameLayout(){
+        return v.findViewById(R.id.bottemFramLayout);
     }
 
 
