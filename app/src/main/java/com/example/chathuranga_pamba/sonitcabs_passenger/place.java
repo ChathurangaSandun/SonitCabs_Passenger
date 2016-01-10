@@ -28,8 +28,9 @@ public class place extends AppCompatActivity {
             @Override
             public void onPlaceSelected(Place place) { // Handle the selected Place
                 dropLoc = place.getLatLng();
-                dropAddress = place.getAddress().toString();
+                dropAddress = place.getName() +", "+place.getAddress().toString();
                 System.out.println(dropAddress);
+
 
 
             }
