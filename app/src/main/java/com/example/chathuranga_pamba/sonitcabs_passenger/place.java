@@ -9,6 +9,9 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import static com.example.chathuranga_pamba.sonitcabs_passenger.HomeFragment.dropAddress;
+import static com.example.chathuranga_pamba.sonitcabs_passenger.HomeFragment.dropLoc;
+
 public class place extends AppCompatActivity {
 
     @Override
@@ -24,7 +27,10 @@ public class place extends AppCompatActivity {
         fragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) { // Handle the selected Place
-                System.out.println(place.getPhoneNumber());
+                dropLoc = place.getLatLng();
+                dropAddress = place.getAddress().toString();
+                System.out.println(dropAddress);
+
 
             }
 

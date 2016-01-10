@@ -102,6 +102,9 @@ import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.
 public class HomeFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, View.OnTouchListener{
+    static LatLng dropLoc = null;
+    static String dropAddress = null;
+
 
     MapView mMapView;
     private GoogleMap googleMap;
@@ -118,7 +121,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
     Geocoder geocoder;
 
-    TextView tvAddress;
+    TextView tvAddress,tvDropOffplace;
     FrameLayout driverDetailContainer;
     float mLastPosisionY;
 
@@ -413,16 +416,12 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                     btBook.setText("ESTIMATE FIRE");
                     btBook.setBackgroundColor(Color.GREEN);
                 }
-
-
-
-
             }
         });
 
 
 
-
+/*
         atvDropOff = (AutoCompleteTextView) v.findViewById(R.id.atv_dropoffplace);
         atvDropOff.setThreshold(1);
         atvDropOff.addTextChangedListener(new TextWatcher() {
@@ -442,6 +441,20 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
             @Override
             public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+*/
+
+
+        tvDropOffplace = (TextView) v.findViewById(R.id.tvDropOffplace);
+
+        tvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(),place.class);
+                startActivity(i);
 
             }
         });
