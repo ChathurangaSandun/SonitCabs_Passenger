@@ -1,15 +1,8 @@
 package com.example.chathuranga_pamba.sonitcabs_passenger;
 
-import android.location.Address;
-import android.location.Geocoder;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,11 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,6 +21,7 @@ public class HomeActivity extends AppCompatActivity
     // Session Manager Class
     SessionManager session;
     boolean homeFramentFlag = true;
+    String customerID;
 
 
 
@@ -56,7 +47,7 @@ public class HomeActivity extends AppCompatActivity
 
         // name
         String name = user.get(SessionManager.KEY_NAME);
-        String customerID = user.get(SessionManager.KEY_USERID);
+         customerID = user.get(SessionManager.KEY_USERID);
 
 
         System.out.println("session------------->"+name);
@@ -169,8 +160,12 @@ public class HomeActivity extends AppCompatActivity
             // Handle the camera action
 
             HomeFragment fragment = new HomeFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("CUSTOMERID", Integer.parseInt(customerID));
+            fragment.setArguments(bundle);
+
             FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container,fragment);
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
             homeFramentFlag = true;
 
