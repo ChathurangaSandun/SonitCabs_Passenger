@@ -178,7 +178,7 @@
         android:layout_below="@+id/linearLayout11"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp">
 
@@ -204,7 +204,7 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="150dp"
+        android:layout_height="175dp"
         android:id="@+id/belowContainer"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -215,11 +215,14 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="150dp"
             android:id="@+id/bottemFramLayout"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"></FrameLayout>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/btBook"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"></FrameLayout>
 
         <Button
             android:layout_width="fill_parent"

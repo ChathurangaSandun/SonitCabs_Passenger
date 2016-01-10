@@ -640,7 +640,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             String data = "";
 
             // Obtain browser key from https://code.google.com/apis/console
-            String key = "key=AIzaSyBMzLqGzmt3zpqNM4PWnzSll0m0WznKapk";
+            String key = "key=AIzaSyDbrJDLZTChp4yWZn6lG6OYH8LVazY3mC4";
 
             String input="";
 
