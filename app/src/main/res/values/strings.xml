@@ -14,4 +14,7 @@
 
     <string name="str_atv_places">Enter Place Here</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_google_places_autocomplete">GooglePlacesAutocompleteActivity
+    </string>
+    <string name="title_activity_place">place</string>
 </resources>

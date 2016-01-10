@@ -144,6 +144,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
 
 
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -164,6 +167,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         //Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         double latitude = 6.90229208;
         double longitude = 79.86143364;
+
+        //autocomplete
+
+
 
 
 
@@ -640,7 +647,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             String data = "";
 
             // Obtain browser key from https://code.google.com/apis/console
-            String key = "key=AIzaSyDbrJDLZTChp4yWZn6lG6OYH8LVazY3mC4";
+            String key = "key=AIzaSyBp8LncpU00p87iTEMsSTIOJJCTHHIcdl4";
 
             String input="";
 
