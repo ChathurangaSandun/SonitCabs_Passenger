@@ -11,6 +11,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 import static com.example.chathuranga_pamba.sonitcabs_passenger.HomeFragment.dropAddress;
 import static com.example.chathuranga_pamba.sonitcabs_passenger.HomeFragment.dropLoc;
+import static com.example.chathuranga_pamba.sonitcabs_passenger.HomeFragment.okfrag;
 
 public class place extends AppCompatActivity {
 
@@ -29,7 +30,9 @@ public class place extends AppCompatActivity {
             public void onPlaceSelected(Place place) { // Handle the selected Place
                 dropLoc = place.getLatLng();
                 dropAddress = place.getName() +", "+place.getAddress().toString();
-                System.out.println(dropAddress);
+                //System.out.println(dropAddress);
+                okfrag = true;
+                finish();
 
 
 
@@ -53,6 +56,8 @@ public class place extends AppCompatActivity {
         } catch (GooglePlayServicesNotAvailableException e) {
             // Handle the exception
         }*/
+
+
 
 
     }
