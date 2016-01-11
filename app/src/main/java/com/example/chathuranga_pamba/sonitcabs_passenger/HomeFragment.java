@@ -1,6 +1,7 @@
 package com.example.chathuranga_pamba.sonitcabs_passenger;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Geocoder;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,27 +23,21 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.DirectionsJSONParser;
 import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.PlaceJSONParser;
-import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.UsesrJSONParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-
-/**
- * A simple {@link Fragment} subclass.
- */
-
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -64,6 +60,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.SERVER_URL;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
 
 
 /**
@@ -383,13 +383,41 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
                     btBook.setText("CANCEL");
                     btBook.setBackgroundColor(Color.RED);
-
+                    alert.showAlertDialog(getActivity(), "Cancelation Job", "Fill correctly Locations", false);
 
 
 
                 }else if("CANCEL".equals(btBook.getText().toString())) {
-                    btBook.setText("ESTIMATE FIRE");
-                    btBook.setBackgroundColor(Color.GREEN);
+
+
+                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setMessage("Are you sure,You wanted to cancel reservation ");
+
+                    alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            timer.cancel();
+                            Intent i = new Intent(getActivity(),HomeActivity.class);
+                            startActivity(i);
+
+                            btBook.setText("ESTIMATE FIRE");
+                            btBook.setBackgroundColor(Color.GREEN);
+
+                        }
+                    });
+
+                    alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+
+
                 }
             }
         });
@@ -991,6 +1019,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         bundle.putString("RESERVATIONID",reservationID);
         bundle.putDouble("CENTERLAT",pickupLatLng.latitude);
         bundle.putDouble("CENTERLONG",pickupLatLng.longitude);
+        bundle.putInt("VEHICLEID",1);
 
         driverReqsetFragment.setArguments(bundle);
         //TODO correct fragemtn error
