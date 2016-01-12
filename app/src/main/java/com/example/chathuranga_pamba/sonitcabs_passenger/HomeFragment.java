@@ -1021,10 +1021,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         bundle.putString("RESERVATIONID",reservationID);
         bundle.putDouble("CENTERLAT",pickupLatLng.latitude);
         bundle.putDouble("CENTERLONG",pickupLatLng.longitude);
+        //todo vehicle detail
         bundle.putInt("VEHICLEID",1);
 
         driverReqsetFragment.setArguments(bundle);
-        //TODO correct fragemtn error
 
         FragmentTransaction t = getFragmentManager().beginTransaction();
         t = getChildFragmentManager().beginTransaction();

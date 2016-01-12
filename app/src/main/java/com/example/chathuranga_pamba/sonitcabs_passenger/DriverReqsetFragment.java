@@ -177,7 +177,8 @@ public class DriverReqsetFragment extends Fragment {
         @Override
         protected String doInBackground(RequestPackage... params) {
 
-            String content = HttpManager.getData(params[0]);
+                String content = HttpManager.getData(params[0]);
+
             Log.e("Chahturanga    content", content);
             return content;
         }

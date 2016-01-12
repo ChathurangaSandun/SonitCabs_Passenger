@@ -4,7 +4,61 @@
     tools:context="com.example.chathuranga_pamba.sonitcabs_passenger.MoneyFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="money9" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:background="#FDE56B">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Nano Cab Rates"
+            android:id="@+id/textView13"
+            android:textAlignment="center"
+            android:layout_marginTop="30dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="LOOKING FOR SOMETHING FIXED??"
+            android:id="@+id/textView15"
+            android:textAlignment="center"
+            android:layout_marginTop="30dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Yes we are humble to provide fixed rates for our customers"
+            android:id="@+id/textView16"
+            android:layout_marginTop="30dp"
+            android:textAlignment="center" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView2"
+            android:src="@drawable/mony_image"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="We give best rates par to the industry and unique edge with our peers.With a cutting edge and our strengths of our entities our threats are exterminated by customer approach and care we give to our customers."
+            android:id="@+id/textView26"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+    </LinearLayout>
 </RelativeLayout>
