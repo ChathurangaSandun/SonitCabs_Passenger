@@ -20,10 +20,11 @@ import android.widget.ProgressBar;
 
 import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.UsesrJSONParser;
 import com.example.chathuranga_pamba.sonitcabs_passenger.models.User;
-import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.SERVER_URL;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.SERVER_URL;
 
 public class LoginActivity extends AppCompatActivity {
 

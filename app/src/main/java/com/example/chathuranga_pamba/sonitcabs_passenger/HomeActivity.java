@@ -1,5 +1,7 @@
 package com.example.chathuranga_pamba.sonitcabs_passenger;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -28,6 +30,7 @@ public class HomeActivity extends AppCompatActivity
 
 
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -35,6 +38,8 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
 
         //session object

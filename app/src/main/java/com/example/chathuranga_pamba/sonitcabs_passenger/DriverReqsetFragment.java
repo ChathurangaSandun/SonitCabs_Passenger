@@ -62,6 +62,7 @@ public class DriverReqsetFragment extends Fragment {
     String estimateTime,estimateDistance;
 
     Polyline polyline;
+    int vehicleID;
     TextView tvTimming,tvName,tvPlateNumber,tvDistance;
 
 
@@ -84,6 +85,10 @@ public class DriverReqsetFragment extends Fragment {
         reservaitonID=getArguments().getString("RESERVATIONID");
         pickupLat = getArguments().getDouble("CENTERLAT");
         pickuoLong= getArguments().getDouble("CENTERLONG");
+        vehicleID = getArguments().getInt("VEHICLEID");
+
+
+
 
 
 
@@ -111,7 +116,7 @@ public class DriverReqsetFragment extends Fragment {
                         progressBar.setProgress(80);
                         break;
                     case 5:
-                        progressBar.setProgress(0);
+                        progressBar.setProgress(100);
                         timer.cancel();
                         break;
                 }
@@ -172,7 +177,8 @@ public class DriverReqsetFragment extends Fragment {
         @Override
         protected String doInBackground(RequestPackage... params) {
 
-            String content = HttpManager.getData(params[0]);
+                String content = HttpManager.getData(params[0]);
+
             Log.e("Chahturanga    content", content);
             return content;
         }
@@ -193,11 +199,22 @@ public class DriverReqsetFragment extends Fragment {
                 Log.e("result is null", "0");
                 if (a == 5) {
                     int b = alert.showAlertDialog(getActivity(), "Sorry", "All cars are busy.", true);
+                    System.out.println("_______________________");
+                    //// TODO: 1/11/2016 DELETE RESERVATION 
+
+                    requestData();
                     if (b == 1) {
 
                         //TODO place home fragment
                         Intent toHome = new Intent(getActivity(), HomeActivity.class);
                         startActivity(toHome);
+
+                        System.out.println("_______________________");
+
+                        System.out.println("_______________________");
+
+
+
                     }
 
 
@@ -441,6 +458,69 @@ public class DriverReqsetFragment extends Fragment {
         }
         return data;
     }
+
+
+
+
+    private void requestData() {
+
+        String loginURL = SERVER_URL+"AddUnassignedJob.php";
+        Log.e("Chahturanga      URL",loginURL);
+
+        RequestPackage p = new RequestPackage();
+        p.setMethod("GET");
+        p.setUri(loginURL);
+        p.setParam("reservationid", reservaitonID);
+        p.setParam("vehicleid", String.valueOf(vehicleID));
+
+        Log.e("Chahturanga      URLgo", loginURL);
+
+        AddUnassignedJobTask task = new AddUnassignedJobTask();
+        task.execute(p);
+    }
+
+    private class AddUnassignedJobTask extends AsyncTask<RequestPackage,String,String> {
+        AlertDialogManager alert = new AlertDialogManager();
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+
+
+        @Override
+        protected String doInBackground(RequestPackage... params) {
+
+            String content = HttpManager.getData(params[0]);
+            Log.e("Chahturanga    content", content);
+            return content;
+        }
+
+
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            Log.e("Chahturanga      result", result);
+        }
+
+
+
+
+    }
+
 
 
     @Override

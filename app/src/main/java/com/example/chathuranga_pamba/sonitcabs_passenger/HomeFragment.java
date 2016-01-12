@@ -1,63 +1,35 @@
 package com.example.chathuranga_pamba.sonitcabs_passenger;
 
 
-import android.app.Activity;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.OvershootInterpolator;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.DirectionsJSONParser;
 import com.example.chathuranga_pamba.sonitcabs_passenger.Parsers.PlaceJSONParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-
-/**
- * A simple {@link Fragment} subclass.
- */
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -68,14 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.vision.barcode.Barcode;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,12 +53,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.SERVER_URL;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
 
 
 /**
@@ -102,6 +72,10 @@ import static com.example.chathuranga_pamba.sonitcabs_passenger.CommonUtilities.
 public class HomeFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, View.OnTouchListener{
+    static LatLng dropLoc = null;
+    static String dropAddress = null;
+    static boolean okfrag = false;
+
 
     MapView mMapView;
     private GoogleMap googleMap;
@@ -110,7 +84,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     private TextView markerText;
     private LinearLayout markerLayout,destinationTextLayout;
     Button setLocationButton,btBook;
-    ImageButton btCancel;
+    ImageButton btCancel,btdroppoint;
 
     String estimateTime,estimateDistance;
 
@@ -118,7 +92,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
     Geocoder geocoder;
 
-    TextView tvAddress;
+    TextView tvAddress,tvDropOffplace;
     FrameLayout driverDetailContainer;
     float mLastPosisionY;
 
@@ -138,7 +112,13 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     int customerID;
     View v;
 
+    Timer timer;
+
     LatLng pickupLatLng;
+    int i=0;
+
+
+
 
 
 
@@ -164,6 +144,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         //Geocoder geocoder = new Geocoder(getActivity().getApplicationContext());
         double latitude = 6.90229208;
         double longitude = 79.86143364;
+
+        //autocomplete
+
+
 
 
 
@@ -207,6 +191,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
         //markerText = (TextView) v.findViewById(R.id.locationMarkertext);
         tvAddress = (TextView) v.findViewById(R.id.adressText);
+        tvDropOffplace = (TextView) v.findViewById(R.id.tvDropOffplace);
         markerLayout = (LinearLayout) v.findViewById(R.id.locationMarker);
 
         destinationTextLayout = (LinearLayout) v.findViewById(R.id.destinationLayout);
@@ -321,7 +306,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
                 Log.e("Chahturanga      URLgo", getAddress);
                 GetAddressTask task = new GetAddressTask();
-                 task.execute(p);
+                task.execute(p);
 
 
                 System.out.println("___________________________________________________________________");
@@ -333,6 +318,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             }
         });
 
+        final FrameLayout f = (FrameLayout) v.findViewById(R.id.bottemFramLayout);
+
+
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -342,6 +330,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                 googleMap.clear();
                 destinationTextLayout.setVisibility(View.INVISIBLE);
                 btBook.setText("ESTIMATE FIRE");
+                f.setVisibility(View.INVISIBLE);
+
+
 
             }
         });
@@ -354,21 +345,23 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             @Override
             public void onClick(View v) {
 
+
                 if("ESTIMATE FIRE".equals(btBook.getText().toString())){
-                    if(!atvDropOff.getText().equals("")) {
-                        String[] split = formattedAddress.split(",");
-                        System.out.println(split[split.length - 1].trim());
-                        if ("Sri Lanka".equals(split[split.length - 1].trim())) {
-                            if(! "Unnamed Road".equals(split[0].trim())){
+                    if(!tvDropOffplace.getText().toString().equals("")) {
+                        //show paths
+                        System.out.println("fdfdffddfdfffffffffff");
 
 
-                                btBook.setText("BOOK NOW");
-                                btBook.setBackgroundColor(Color.BLUE);
+                        if(dropLoc != null){
+                            showPath(pickupLatLng.latitude,pickupLatLng.longitude,dropLoc.latitude,dropLoc.longitude);
+                            btBook.setText("BOOK NOW");
+                            btBook.setBackgroundColor(Color.BLUE);
+                        }else{
+                            alert.showAlertDialog(getActivity(),"Select DropOff","Please select drop off Location",true);
 
-                                //show paths
-                                System.out.println("fdfdffddfdfffffffffff");
-                                showPath();
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(6.7229806, 80.0646682), 12.0f));
+                        }
+
+
 
 
 
@@ -379,14 +372,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
 
 
-                            }else{
-                                alert.showAlertDialog(getActivity(), "Location not correct", "Invalied pickup Location", false);
-                            }
-
-
-                        } else {
-                            alert.showAlertDialog(getActivity(), "Location not correct", "Invalied pickup Location", false);
-                        }
                     }else {
                         alert.showAlertDialog(getActivity(), "Location not filled", "Fill correctly Locations", false);
                     }
@@ -395,27 +380,53 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                 }else if("BOOK NOW".equals(btBook.getText().toString())){
                     System.out.println("dfd");
                     requestData();
-
                     btBook.setText("CANCEL");
                     btBook.setBackgroundColor(Color.RED);
 
 
 
 
+
                 }else if("CANCEL".equals(btBook.getText().toString())) {
-                    btBook.setText("ESTIMATE FIRE");
-                    btBook.setBackgroundColor(Color.GREEN);
+
+
+                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setMessage("Are you sure,You wanted to cancel reservation ");
+
+                    alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            timer.cancel();
+
+                            //todo CANCEL RESERVATION
+                            Intent i = new Intent(getActivity(),HomeActivity.class);
+                            startActivity(i);
+
+                            btBook.setText("ESTIMATE FIRE");
+                            btBook.setBackgroundColor(Color.GREEN);
+
+                        }
+                    });
+
+                    alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+
+
                 }
-
-
-
-
             }
         });
 
 
 
-
+/*
         atvDropOff = (AutoCompleteTextView) v.findViewById(R.id.atv_dropoffplace);
         atvDropOff.setThreshold(1);
         atvDropOff.addTextChangedListener(new TextWatcher() {
@@ -438,6 +449,53 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
             }
         });
+
+*/
+
+
+
+        btdroppoint = (ImageButton) v.findViewById(R.id.btdroppoint);
+        btdroppoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(getActivity(), place.class);
+                startActivity(i);
+
+
+            }
+        });
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+
+                System.out.println(okfrag);
+                if (okfrag == true) {
+                    timer.cancel();
+                    getAddressData();
+                }
+
+                if (i == 120) {
+                    timer.cancel();
+                }
+
+                i++;
+
+
+            }
+        }, 1000, 1000);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -491,6 +549,12 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+
+    public void setDetails(){
+
 
     }
 
@@ -583,12 +647,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
             }
 
-
-
-
-
-
-
         }
 
 
@@ -640,7 +698,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             String data = "";
 
             // Obtain browser key from https://code.google.com/apis/console
-            String key = "key=AIzaSyDbrJDLZTChp4yWZn6lG6OYH8LVazY3mC4";
+            String key = "key=AIzaSyBp8LncpU00p87iTEMsSTIOJJCTHHIcdl4";
 
             String input="";
 
@@ -732,9 +790,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
 
     //show polilines
-    public void showPath(){
+    public void showPath(double pkx,double pky,double dox,double doy){
 
-        String url = getDistanceOnRoad(center.latitude,center.longitude,6.7229806,80.0646682);
+        String url = getDistanceOnRoad(pkx,pky,dox,doy);
         DownloadTask downloadTask = new DownloadTask();
 
         downloadTask.execute(url);
@@ -898,9 +956,9 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         p.setParam("pkx",String.valueOf(center.latitude) );
         p.setParam("pky",String.valueOf(center.longitude) );
         p.setParam("pkAddress",formattedAddress );
-        p.setParam("dox",String.valueOf(6.7229806));
-        p.setParam("doy",String.valueOf(80.0646682) );
-        p.setParam("doAddress","horana" );
+        p.setParam("dox",String.valueOf(dropLoc.latitude));
+        p.setParam("doy",String.valueOf(dropLoc.longitude) );
+        p.setParam("doAddress",dropAddress );
 
 
         Log.e("Chahturanga      URLgo", loginURL);
@@ -963,9 +1021,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         bundle.putString("RESERVATIONID",reservationID);
         bundle.putDouble("CENTERLAT",pickupLatLng.latitude);
         bundle.putDouble("CENTERLONG",pickupLatLng.longitude);
+        //todo vehicle detail
+        bundle.putInt("VEHICLEID",1);
 
         driverReqsetFragment.setArguments(bundle);
-        //TODO correct fragemtn error
 
         FragmentTransaction t = getFragmentManager().beginTransaction();
         t = getChildFragmentManager().beginTransaction();
@@ -985,6 +1044,78 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     public View getFrameLayout(){
         return v.findViewById(R.id.bottemFramLayout);
     }
+
+
+    private void getAddressData() {
+
+        String loginURL =SERVER_URL+ "test.php";
+        Log.e("Chahturanga      URL", loginURL);
+
+        RequestPackage p = new RequestPackage();
+        p.setMethod("GET");
+        p.setUri(loginURL);
+
+        TestTask task = new TestTask();
+        task.execute(p);
+    }
+
+    private class TestTask extends AsyncTask<RequestPackage,String,String> {
+
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+          ;
+
+        }
+
+
+
+        @Override
+        protected String doInBackground(RequestPackage... params) {
+
+            String content = HttpManager.getData(params[0]);
+            Log.e("Chahturanga    content", content);
+
+
+
+            return content;
+        }
+
+
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            Log.e("Chahturanga      result", result);
+
+            tvDropOffplace.setText(dropAddress);
+            MarkerOptions m = new MarkerOptions().position(dropLoc).title("pickup");
+            m.icon(BitmapDescriptorFactory
+                    .defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            googleMap.addMarker(m);
+
+
+
+
+
+
+
+
+        }
+
+
+    }
+
 
 
 

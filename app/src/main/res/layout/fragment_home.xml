@@ -109,11 +109,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="1"
-        android:id="@+id/linearLayout11"
-        android:layout_marginRight="20dp"
+        android:id="@+id/destinationLayout"
         android:background="@color/white"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_below="@+id/layout11"
+        android:layout_alignLeft="@+id/layout11"
+        android:layout_alignStart="@+id/layout11"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp">
     <LinearLayout
         android:layout_width="287dp"
         android:layout_height="wrap_content"
@@ -135,16 +137,16 @@
             android:orientation="vertical"
             >
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/textView2"
             android:layout_width="392dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Selected Location"
+            android:text="Dropoff Locaiton"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#058C0B" />
 
         <TextView
-            android:id="@+id/adressText"
+            android:id="@+id/tvDropOffplace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -162,46 +164,123 @@
             android:background="@color/white"
             android:layout_marginTop="5dp"
             android:text="X"
+            android:id="@+id/btdroppoint"
+            android:src="@drawable/ic_droppin"
+            android:layout_marginLeft="10dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:id="@+id/layout11"
+        android:layout_marginRight="20dp"
+        android:background="@color/white"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
+        <LinearLayout
+            android:layout_width="287dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="horizontal"
+            android:id="@+id/linearLayout12"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_alignRight="@+id/locationMarker"
+            android:layout_alignEnd="@+id/locationMarker"
+            android:layout_marginRight="0dp"
+            android:layout_weight="1.03">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="392dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Selected Location"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#058C0B" />
+
+                <TextView
+                    android:id="@+id/adressText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="Getting location"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <ImageButton
+            android:layout_width="31dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:background="@color/white"
+            android:layout_marginTop="5dp"
+            android:text="X"
             android:id="@+id/btclose"
             android:src="@drawable/ic_close"
             android:layout_marginLeft="10dp" />
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:id="@+id/destinationLayout"
-        android:layout_weight="1.03"
-        android:layout_below="@+id/linearLayout11"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp">
+
+    <!--
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:id="@+id/destinationLayout"
+            android:layout_weight="1.03"
+            android:layout_below="@+id/linearLayout11"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="392dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Destination Location"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#050DA6" />
+
+            <AutoCompleteTextView
+                android:id="@+id/atv_dropoffplace"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:hint="Enter Address"
+                android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/textView13"
-            android:layout_width="392dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Destination Location"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#050DA6" />
-
-        <AutoCompleteTextView
-            android:id="@+id/atv_dropoffplace"
-            android:layout_width="fill_parent"
+            android:id="@+id/tvDropOffplace"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:hint="Enter Address"
-            android:textSize="16sp" />
+            android:text="Getting location"
+            android:textSize="16sp"
+            android:onClick="onClick"/>
     </LinearLayout>
-
+-->
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="175dp"
