@@ -380,10 +380,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                 }else if("BOOK NOW".equals(btBook.getText().toString())){
                     System.out.println("dfd");
                     requestData();
-
                     btBook.setText("CANCEL");
                     btBook.setBackgroundColor(Color.RED);
-                    alert.showAlertDialog(getActivity(), "Cancelation Job", "Fill correctly Locations", false);
+
+
 
 
 
@@ -397,6 +397,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
                             timer.cancel();
+
+                            //todo CANCEL RESERVATION
                             Intent i = new Intent(getActivity(),HomeActivity.class);
                             startActivity(i);
 
@@ -476,7 +478,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                     getAddressData();
                 }
 
-                if (i == 60) {
+                if (i == 120) {
                     timer.cancel();
                 }
 

@@ -199,6 +199,7 @@ public class DriverReqsetFragment extends Fragment {
                 if (a == 5) {
                     int b = alert.showAlertDialog(getActivity(), "Sorry", "All cars are busy.", true);
                     System.out.println("_______________________");
+                    //// TODO: 1/11/2016 DELETE RESERVATION 
 
                     requestData();
                     if (b == 1) {
