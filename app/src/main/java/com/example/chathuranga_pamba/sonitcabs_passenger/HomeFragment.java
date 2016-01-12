@@ -117,6 +117,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     LatLng pickupLatLng;
     int i=0;
 
+    ConnectionDetector cd;
+
 
 
 
@@ -353,9 +355,24 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
 
                         if(dropLoc != null){
-                            showPath(pickupLatLng.latitude,pickupLatLng.longitude,dropLoc.latitude,dropLoc.longitude);
-                            btBook.setText("BOOK NOW");
-                            btBook.setBackgroundColor(Color.BLUE);
+                            cd = new ConnectionDetector(getActivity());
+
+                            Log.e("Tag", String.valueOf(cd.isConnectingToInternet()));
+                            if (!cd.isConnectingToInternet()) {
+                                // Internet Connection is not present
+                                alert.showAlertDialog(getActivity(),
+                                        "Internet Connection Error",
+                                        "Please connect to working Internet connection", false);
+                                // stop executing code by return
+                                return;
+                            }else{
+                                showPath(pickupLatLng.latitude,pickupLatLng.longitude,dropLoc.latitude,dropLoc.longitude);
+                                btBook.setText("BOOK NOW");
+                                btBook.setBackgroundColor(Color.BLUE);
+                            }
+
+
+
                         }else{
                             alert.showAlertDialog(getActivity(),"Select DropOff","Please select drop off Location",true);
 
