@@ -279,9 +279,12 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             }
         });
 
+
+
         setLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                googleMap.clear();
                 if (isVisible) {
                     markerLayout.setVisibility(View.INVISIBLE);
                     isVisible = false;
@@ -333,7 +336,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                 destinationTextLayout.setVisibility(View.INVISIBLE);
                 btBook.setText("ESTIMATE FIRE");
                 f.setVisibility(View.INVISIBLE);
-
 
 
             }
@@ -476,34 +478,17 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             @Override
             public void onClick(View v) {
 
+
+
+
                 Intent i = new Intent(getActivity(), place.class);
                 startActivity(i);
+                getDoAddress();
 
 
             }
         });
 
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-
-
-                System.out.println(okfrag);
-                if (okfrag == true) {
-                    timer.cancel();
-                    getAddressData();
-                }
-
-                if (i == 120) {
-                    timer.cancel();
-                }
-
-                i++;
-
-
-            }
-        }, 1000, 1000);
 
 
 
@@ -523,6 +508,32 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
         // Perform any camera updates here
         return v;
+    }
+
+    private void getDoAddress(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+
+
+                System.out.println(okfrag);
+                if (okfrag == true) {
+                    //timer.cancel();
+                    getAddressData();
+                    okfrag=false;
+                }
+
+                if (i == 12000000) {
+                    timer.cancel();
+                }
+
+                i++;
+
+
+            }
+        }, 1000, 2000);
+
     }
 
     @Override
